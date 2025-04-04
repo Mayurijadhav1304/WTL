@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .container {
+            width: 400px;
+            padding: 20px;
+            background: rgb(224, 215, 215);
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .button-group {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .button-group input {
+            width: 23%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .button-group input:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Student Information</h1>
+        <form action="form.php" method="post">
+            <div class="form-group">
+                <label for="t1">Enter Your Name:</label>
+                <input type="text" name="t1" id="t1" required />
+            </div>
+            <div class="form-group">
+                <label for="t2">Mobile No:</label>
+                <input type="number" name="t2" id="t2" required />
+            </div>
+            <div class="form-group">
+                <label for="t3">Enter Your Roll No:</label>
+                <input type="number" name="t3" id="t3" required />
+            </div>
+            <div class="form-group">
+                <label for="t4">Email:</label>
+                <input type="email" name="t4" id="t4" required />
+            </div>
+            <div class="form-group">
+                <label for="t5">Address:</label>
+                <input type="text" name="t5" id="t5" required />
+            </div>
+            <div class="form-group">
+                <label for="t6">Department:</label> 
+                <input type="text" name="t6" id="t6" />
+                </div>
+            <div class="button-group">
+                <input type="submit" name="b1" value="Add">
+                <input type="button" name="b2" value="Display">
+                <input type="button" name="b3" value="Delete">
+                <input type="button" name="b4" value="Modify">
+            </div>
+        </form>
+    </div>
+</body>
+</html>
