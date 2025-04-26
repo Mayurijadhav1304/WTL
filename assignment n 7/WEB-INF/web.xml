@@ -1,0 +1,11 @@
+This XML file does not appear to have any style information associated with it. The document tree is shown below.
+<web-app>
+<servlet>
+<servlet-name>yogesh</servlet-name>
+<servlet-class>DemoServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>yogesh</servlet-name>
+<url-pattern>/it</url-pattern>
+</servlet-mapping>
+</web-app>
