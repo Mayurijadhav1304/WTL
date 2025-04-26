@@ -1,0 +1,143 @@
+import jakarta.servlet.http.*;
+import jakarta.servlet.*;
+import java.io.*;
+import java.sql.*;
+
+public class DemoServlet extends HttpServlet {
+
+    public void doGet(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+        res.setContentType("text/html");
+        PrintWriter pw = res.getWriter();
+
+        pw.println("<html><head><style>");
+        pw.println("body {font-family: Arial, sans-serif; background: #f7f9fc; margin: 0; padding: 0;}");
+        pw.println(".container {width: 90%; margin: 30px auto; background: #fff; padding: 20px; box-shadow: 0px 0px 15px rgba(0,0,0,0.2); border-radius: 8px;}");
+        pw.println("h2 {text-align: center; color: #333;}");
+        pw.println("table {border-collapse: collapse; width: 100%; margin-top: 20px;}");
+        pw.println("th, td {border: 1px solid #ccc; padding: 10px; text-align: center;}");
+        pw.println("th {background-color: #4CAF50; color: white;}");
+        pw.println("tr:nth-child(even) {background-color: #f2f2f2;}");
+        pw.println("input[type=text] {width: 95%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;}");
+        pw.println(".btn {padding: 6px 12px; margin: 2px; border: none; border-radius: 4px; cursor: pointer;}");
+        pw.println(".update-btn {background-color: #2196F3; color: white;}");
+        pw.println(".delete-btn {background-color: #f44336; color: white;}");
+        pw.println(".insert-btn {background-color: #4CAF50; color: white;}");
+        pw.println(".btn:hover {opacity: 0.9;}");
+        pw.println("</style></head><body>");
+
+        pw.println("<div class='container'>");
+        pw.println("<h2>📚 Welcome to Pragati eBookShop 📚</h2>");
+        pw.println("<form method='post'>");  // Form begins
+
+        pw.println("<table>");
+        pw.println("<tr><th>Book ID</th><th>Title</th><th>Author</th><th>Price</th><th>Quantity</th><th>Actions</th></tr>");
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/pragati", "root", "");
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM ebookshop");
+
+            while (rs.next()) {
+                int id = rs.getInt("book_id");
+                String title = rs.getString("book_title");
+                String author = rs.getString("book_author");
+                double price = rs.getDouble("book_price");
+                int quantity = rs.getInt("quantity");
+
+                pw.println("<tr>");
+                pw.println("<td><input type='text' name='book_id_" + id + "' value='" + id + "' readonly></td>");
+                pw.println("<td><input type='text' name='book_title_" + id + "' value='" + title + "'></td>");
+                pw.println("<td><input type='text' name='book_author_" + id + "' value='" + author + "'></td>");
+                pw.println("<td><input type='text' name='book_price_" + id + "' value='" + price + "'></td>");
+                pw.println("<td><input type='text' name='quantity_" + id + "' value='" + quantity + "'></td>");
+                pw.println("<td>");
+                pw.println("<button class='btn update-btn' type='submit' name='action' value='Update_" + id + "'>Update</button>");
+                pw.println("<button class='btn delete-btn' type='submit' name='action' value='Delete_" + id + "'>Delete</button>");
+                pw.println("</td>");
+                pw.println("</tr>");
+            }
+            con.close();
+        } catch (Exception e) {
+            pw.print("<tr><td colspan='6'><p style='color:red;'>Error: " + e.getMessage() + "</p></td></tr>");
+        }
+
+        // Insert new book row
+        pw.println("<tr>");
+        pw.println("<td><input type='text' name='new_id'></td>");
+        pw.println("<td><input type='text' name='new_title'></td>");
+        pw.println("<td><input type='text' name='new_author'></td>");
+        pw.println("<td><input type='text' name='new_price'></td>");
+        pw.println("<td><input type='text' name='new_quantity'></td>");
+        pw.println("<td><button class='btn insert-btn' type='submit' name='action' value='Insert'>Insert</button></td>");
+        pw.println("</tr>");
+
+        pw.println("</table>");
+        pw.println("</form>");
+        pw.println("</div>");
+
+        pw.println("</body></html>");
+        pw.close();
+    }
+
+    public void doPost(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+        res.setContentType("text/html");
+        PrintWriter pw = res.getWriter();
+
+        String action = req.getParameter("action");
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/pragati", "root", "");
+
+            if (action != null) {
+                if (action.equals("Insert")) {
+                    int id = Integer.parseInt(req.getParameter("new_id"));
+                    String title = req.getParameter("new_title");
+                    String author = req.getParameter("new_author");
+                    double price = Double.parseDouble(req.getParameter("new_price"));
+                    int quantity = Integer.parseInt(req.getParameter("new_quantity"));
+
+                    PreparedStatement ps = con.prepareStatement("INSERT INTO ebookshop (book_id, book_title, book_author, book_price, quantity) VALUES (?, ?, ?, ?, ?)");
+                    ps.setInt(1, id);
+                    ps.setString(2, title);
+                    ps.setString(3, author);
+                    ps.setDouble(4, price);
+                    ps.setInt(5, quantity);
+                    ps.executeUpdate();
+                }
+                else if (action.startsWith("Update_")) {
+                    int id = Integer.parseInt(action.substring(7));
+                    String title = req.getParameter("book_title_" + id);
+                    String author = req.getParameter("book_author_" + id);
+                    double price = Double.parseDouble(req.getParameter("book_price_" + id));
+                    int quantity = Integer.parseInt(req.getParameter("quantity_" + id));
+
+                    PreparedStatement ps = con.prepareStatement("UPDATE ebookshop SET book_title=?, book_author=?, book_price=?, quantity=? WHERE book_id=?");
+                    ps.setString(1, title);
+                    ps.setString(2, author);
+                    ps.setDouble(3, price);
+                    ps.setInt(4, quantity);
+                    ps.setInt(5, id);
+                    ps.executeUpdate();
+                }
+                else if (action.startsWith("Delete_")) {
+                    int id = Integer.parseInt(action.substring(7));
+
+                    PreparedStatement ps = con.prepareStatement("DELETE FROM ebookshop WHERE book_id=?");
+                    ps.setInt(1, id);
+                    ps.executeUpdate();
+                }
+            }
+            con.close();
+        } catch (Exception e) {
+            pw.print("<p style='color:red;'>Error: " + e.getMessage() + "</p>");
+        }
+
+        // Refresh page
+        RequestDispatcher rd = req.getRequestDispatcher("DemoServlet");
+        rd.include(req, res);
+    }
+}
